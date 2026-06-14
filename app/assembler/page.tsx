@@ -4,7 +4,6 @@ import React from 'react';
 import Link from 'next/link';
 
 export default function AssemblerPage() {
-    // Заглушка с тестовыми заказами
     const testOrders = [
         {
             id: 1001,

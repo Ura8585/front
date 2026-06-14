@@ -196,8 +196,6 @@ export default function ProfilePage() {
             <main className="relative z-10 max-w-6xl mx-auto px-6 py-16">
                 <h1 className="text-5xl font-black tracking-tighter mb-2">Личный кабинет</h1>
                 <p className="text-zinc-400">Добро пожаловать, {user?.login}</p>
-
-                {/* Профиль */}
                 <div className="mt-12 bg-zinc-900/70 border border-white/10 backdrop-blur-2xl rounded-3xl p-10">
                     <div className="flex flex-col md:flex-row gap-10 items-start">
                         <div className="flex flex-col items-center">
@@ -233,8 +231,6 @@ export default function ProfilePage() {
                         </div>
                     </div>
                 </div>
-
-                {/* Мои заказы */}
                 <div className="mt-16">
                     <h2 className="text-3xl font-bold mb-8 flex items-center gap-3">
                         Мои заказы <span className="text-sm font-normal text-zinc-500">({orders.length})</span>
@@ -274,8 +270,6 @@ export default function ProfilePage() {
                                                 <p>{order.shippingAddress || 'Не указан'}</p>
                                             </div>
                                         </div>
-
-                                        {/* Кнопки действий */}
                                         {canEdit && (
                                             <div className="flex gap-3 pt-4 border-t border-white/5 flex-wrap">
                                                 {/* Изменить адрес — переход на чекаут */}
@@ -316,8 +310,6 @@ export default function ProfilePage() {
                         </div>
                     )}
                 </div>
-
-                {/* Быстрые действия */}
                 <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-6">
                     <Link href="/configurator" className="rounded-3xl bg-gradient-to-r from-cyan-500 to-purple-600 p-10 text-center hover:brightness-110 transition-all">
                         <p className="text-3xl font-bold">Собрать новую клавиатуру</p>

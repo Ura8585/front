@@ -14,21 +14,15 @@ export default function AdminPage() {
     const [stats, setStats] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [userRole, setUserRole] = useState<string>('');
-
-    // Форма добавления компонента
     const [showAddComponent, setShowAddComponent] = useState(false);
     const [compForm, setCompForm] = useState({ category: 'case', name: '', description: '', price: 0, inStook: true, imageUrl: '' });
 
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) { window.location.href = '/login'; return; }
-
-        // Проверяем роль
         try {
             const payload = JSON.parse(atob(token.split('.')[1]));
             console.log('PAYLOAD:', payload);
-
-            // JWT использует полные URI для claims
             const role = payload.role
                 || payload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]
                 || '';
@@ -147,7 +141,6 @@ export default function AdminPage() {
             </header>
 
             <main className="max-w-7xl mx-auto px-6 py-8">
-                {/* Вкладки */}
                 <div className="flex gap-3 mb-8 flex-wrap">
                     {[
                         { id: 'orders', label: '📦 Заказы' },
@@ -170,8 +163,6 @@ export default function AdminPage() {
                         </button>
                     ))}
                 </div>
-
-                {/* Статистика */}
                 {activeTab === 'stats' && stats && (
                     <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                         {[
@@ -188,8 +179,6 @@ export default function AdminPage() {
                         ))}
                     </div>
                 )}
-
-                {/* Заказы */}
                 {activeTab === 'orders' && (
                     <div className="overflow-x-auto bg-zinc-900/50 border border-white/10 rounded-3xl p-6">
                         <table className="w-full text-sm">
@@ -228,8 +217,6 @@ export default function AdminPage() {
                         </table>
                     </div>
                 )}
-
-                {/* Пользователи (только admin) */}
                 {activeTab === 'users' && isAdmin && (
                     <div className="overflow-x-auto bg-zinc-900/50 border border-white/10 rounded-3xl p-6">
                         <table className="w-full text-sm">
@@ -276,8 +263,6 @@ export default function AdminPage() {
                         </table>
                     </div>
                 )}
-
-                {/* Галерея */}
                 {activeTab === 'gallery' && (
                     <div className="bg-zinc-900/50 border border-white/10 rounded-3xl p-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -299,8 +284,6 @@ export default function AdminPage() {
                         </div>
                     </div>
                 )}
-
-                {/* Компоненты */}
                 {activeTab === 'components' && (
                     <div className="bg-zinc-900/50 border border-white/10 rounded-3xl p-6">
                         <button onClick={() => setShowAddComponent(true)} className="mb-4 px-5 py-2.5 rounded-xl bg-emerald-500 text-black font-bold text-sm hover:bg-emerald-400 transition">

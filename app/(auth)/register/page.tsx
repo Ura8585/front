@@ -18,8 +18,6 @@ export default function RegisterPage() {
 
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
-
-    // Форматирование телефона с маской +7 (___) ___-__-__
     const formatPhone = (value: string) => {
         const numbers = value.replace(/\D/g, '');
         let formatted = '+7';
@@ -49,8 +47,6 @@ export default function RegisterPage() {
             setFormData({ ...formData, [name]: value });
         }
     };
-
-    // Простая валидация email
     const isValidEmail = (email: string) => {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     };
@@ -58,8 +54,6 @@ export default function RegisterPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
-
-        // Валидация
         if (!formData.login || !formData.password || !formData.email || !formData.name || !formData.surname) {
             setError('Пожалуйста, заполните все обязательные поля');
             return;

@@ -160,7 +160,6 @@ export default function HomePage() {
 
     return (
         <div className="min-h-screen bg-[#05040b] text-white relative overflow-hidden">
-            {/* Фон */}
             <div className="fixed inset-0 z-0 pointer-events-none">
                 <div className="absolute inset-0 bg-[radial-gradient(at_50%_30%,#2a1b5f_0%,transparent_70%)]" />
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,rgba(34,211,238,0.18),transparent_50%)]" />
@@ -168,8 +167,6 @@ export default function HomePage() {
                 <div className="absolute top-[-200px] left-[-200px] w-[800px] h-[800px] bg-cyan-400/10 rounded-full blur-[140px]" />
                 <div className="absolute bottom-[-300px] right-[-200px] w-[1000px] h-[1000px] bg-purple-500/10 rounded-full blur-[160px]" />
             </div>
-
-            {/* ХЕДЕР */}
             <header className="sticky top-0 z-50 border-b border-white/10 bg-[#05040b]/90 backdrop-blur-2xl">
                 <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-3">
@@ -209,8 +206,6 @@ export default function HomePage() {
                     </div>
                 </div>
             </header>
-
-            {/* HERO */}
             <section className="relative min-h-[90dvh] flex items-center justify-center z-10">
                 <div className="max-w-5xl mx-auto text-center px-6">
                     <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-6 py-2 text-sm mb-10">
@@ -235,8 +230,6 @@ export default function HomePage() {
                     </div>
                 </div>
             </section>
-
-            {/* ГАЛЕРЕЯ */}
             <section id="gallery" className="relative py-24 z-10 border-t border-white/10">
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="flex justify-between items-end mb-12">
@@ -261,12 +254,9 @@ export default function HomePage() {
                                     href={`/configurator?configId=${item.configId}`}
                                     className="group relative aspect-video rounded-3xl overflow-hidden border border-white/5 hover:border-purple-500/60 transition-all hover:scale-[1.02]"
                                 >
-                                    {/* Градиентный фон */}
                                     <div className="absolute inset-0" style={{
                                         background: `linear-gradient(160deg, ${item.caseColor || '#1a1a1a'} 0%, ${item.caseColor || '#1a1a1a'} 35%, ${item.keycapColor || '#333'} 65%, ${item.keycapColor || '#333'} 100%)`
                                     }} />
-
-                                    {/* Декоративные клавиши */}
                                     <div className="absolute inset-0 flex items-center justify-center opacity-30">
                                         <div className="grid grid-cols-6 gap-1.5 rotate-6">
                                             {Array.from({ length: 30 }).map((_, i) => (
@@ -282,8 +272,6 @@ export default function HomePage() {
                                             ))}
                                         </div>
                                     </div>
-
-                                    {/* Свитчи (маленькие точки под клавишами) */}
                                     <div className="absolute inset-0 flex items-center justify-center opacity-20">
                                         <div className="grid grid-cols-6 gap-1.5 rotate-6 translate-y-4">
                                             {Array.from({ length: 30 }).map((_, i) => (
@@ -296,10 +284,7 @@ export default function HomePage() {
                                         </div>
                                     </div>
 
-                                    {/* Градиент-оверлей */}
                                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-
-                                    {/* Инфо */}
                                     <div className="absolute bottom-6 left-6 right-6">
                                         <p className="text-cyan-400 text-sm font-mono">{item.author}</p>
                                         <p className="text-xl font-bold truncate">{item.title}</p>
@@ -314,8 +299,6 @@ export default function HomePage() {
                     )}
                 </div>
             </section>
-
-            {/* КАТАЛОГ */}
             <section id="catalog" className="relative py-24 z-10 bg-zinc-950/50 border-t border-white/10">
                 <div className="max-w-7xl mx-auto px-6">
                     <h2 className="text-5xl font-bold tracking-tight mb-2">📦 Каталог компонентов</h2>
@@ -368,8 +351,6 @@ export default function HomePage() {
                     )}
                 </div>
             </section>
-
-            {/* ФУТЕР */}
             <footer className="relative z-10 border-t border-white/10 py-12 bg-[#05040b]">
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
@@ -405,8 +386,6 @@ export default function HomePage() {
                     </div>
                 </div>
             </footer>
-
-            {/* МОДАЛКА АВТОРИЗАЦИИ */}
             {isAuthModalOpen && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-xl px-4" onClick={(e) => { if (e.target === e.currentTarget) setIsAuthModalOpen(false); }}>
                     <div className="bg-zinc-900 border border-white/10 rounded-3xl w-full max-w-md p-10 relative">
@@ -457,7 +436,6 @@ export default function HomePage() {
                                 {authLoading ? 'Загрузка...' : authMode === 'login' ? 'Войти' : 'Зарегистрироваться'}
                             </button>
                         </form>
-
                         <p className="text-center mt-6 text-sm text-zinc-400">
                             {authMode === 'login' ? 'Нет аккаунта?' : 'Уже есть аккаунт?'}{' '}
                             <button onClick={() => { setAuthMode(authMode === 'login' ? 'register' : 'login'); setAuthError(''); }} className="text-cyan-400 hover:underline">

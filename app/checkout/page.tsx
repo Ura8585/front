@@ -36,8 +36,6 @@ function CheckoutContent() {
     const [orderLoading, setOrderLoading] = useState(false);
     const [orderStatus, setOrderStatus] = useState<string | null>(null);
     const [successOrderId, setSuccessOrderId] = useState<number | null>(null);
-
-    // Загрузка данных
     useEffect(() => {
         if (!configId) {
             setError('Конфигурация не найдена');
@@ -55,8 +53,6 @@ function CheckoutContent() {
             try {
                 const base = 'http://localhost:5237';
                 const token = localStorage.getItem('token')!;
-
-                // Сначала получаем профиль
                 const profileRes = await fetch(`${base}/api/users/profile`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -66,14 +62,10 @@ function CheckoutContent() {
                     const p = await profileRes.json();
                     userEmail = p.email || '';
                 }
-
-                // Потом конфиг
                 const configRes = await fetch(`${base}/api/configurations/${configId}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (configRes.ok) setConfig(await configRes.json());
-
-                // Если режим редактирования — загружаем текущий адрес заказа
                 if (editMode && orderId) {
                     const ordersRes = await fetch(`${base}/api/orders/my-orders`, {
                         headers: { 'Authorization': `Bearer ${token}` }
@@ -91,7 +83,6 @@ function CheckoutContent() {
                         setContactEmail(userEmail);
                     }
                 } else {
-                    // Новый заказ — просто email из профиля
                     setContactEmail(userEmail);
                 }
             } catch (err: any) {
@@ -103,8 +94,6 @@ function CheckoutContent() {
 
         fetchData();
     }, [configId, router, editMode, orderId]);
-
-    // Инициализация карты
     useEffect(() => {
         if (loading || error || !config || successOrderId) return;
 
@@ -176,7 +165,6 @@ function CheckoutContent() {
             const token = localStorage.getItem('token');
 
             if (editMode && orderId) {
-                // Режим редактирования — обновляем заказ
                 const response = await fetch(`http://localhost:5237/api/orders/${orderId}/update`, {
                     method: 'PUT',
                     headers: {
@@ -193,7 +181,6 @@ function CheckoutContent() {
 
                 setSuccessOrderId(Number(orderId));
             } else {
-                // Режим создания — новый заказ
                 const response = await fetch('http://localhost:5237/api/orders/place', {
                     method: 'POST',
                     headers: {

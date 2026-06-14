@@ -6,7 +6,6 @@ import { useSearchParams } from 'next/navigation';
 import * as THREE from 'three';
 import Cropper from 'react-easy-crop';
 
-// Вспомогательная функция для генерации обрезанного изображения
 const getCroppedImg = (imageSrc: string, pixelCrop: { x: number; y: number; width: number; height: number }): Promise<Blob> => {
     return new Promise((resolve, reject) => {
         const image = new Image();
@@ -84,8 +83,6 @@ export default function ConfiguratorPage() {
     const [waveResetTrigger, setWaveResetTrigger] = useState(0);
     const [isSending, setIsSending] = useState(false);
     const [loadingConfig, setLoadingConfig] = useState(!!configId);
-
-    // Загрузка существующей конфигурации
     useEffect(() => {
         if (!configId) {
             setLoadingConfig(false);
@@ -104,8 +101,6 @@ export default function ConfiguratorPage() {
                     return;
                 }
                 const data = await response.json();
-
-                // Применяем загруженные настройки
                 if (data.layout) setLayout(data.layout);
                 if (data.caseColor) setCaseColor(data.caseColor);
                 if (data.keycapColor) setKeycapColor(data.keycapColor);
@@ -236,7 +231,6 @@ export default function ConfiguratorPage() {
                 localStorage.setItem('lastConfigId', data.configurationId);
 
                 if (editMode && configId) {
-                    // Возвращаемся в профиль после редактирования
                     window.location.href = '/profile';
                 } else {
                     window.location.href = `/checkout?configId=${data.configurationId}`;
@@ -271,7 +265,6 @@ export default function ConfiguratorPage() {
 
     return (
         <div className="h-screen w-full bg-zinc-950 text-white overflow-hidden flex font-sans relative select-none">
-            {/* МОДАЛКА КРОПЕРА */}
             <AnimatePresence>
                 {cropModalOpen && rawImageSrc && (
                     <motion.div
@@ -313,8 +306,6 @@ export default function ConfiguratorPage() {
                     </motion.div>
                 )}
             </AnimatePresence>
-
-            {/* ЛЕВАЯ ПАНЕЛЬ */}
             <motion.aside
                 initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }}
                 className="w-[420px] bg-zinc-900/95 backdrop-blur-3xl border-r border-white/5 p-8 flex flex-col justify-between z-20 overflow-y-auto text-white shadow-[20px_0_50px_rgba(0,0,0,0.3)]"
@@ -335,8 +326,6 @@ export default function ConfiguratorPage() {
                             </button>
                         )}
                     </div>
-
-                    {/* ЗАГРУЗКА ПРИНТА */}
                     <div className="mb-5 p-4 rounded-xl bg-gradient-to-br from-purple-500/[0.05] to-pink-500/[0.05] border border-purple-500/30">
                         <label className="text-[10px] text-purple-400 font-bold uppercase tracking-widest mb-3 block">🪐 Сплошной Full-Body Принт</label>
                         {!printBlobUrl ? (
@@ -363,8 +352,6 @@ export default function ConfiguratorPage() {
                             </div>
                         )}
                     </div>
-
-                    {/* Выбор раскладки */}
                     <div className="mb-5 p-4 rounded-xl bg-cyan-500/[0.04] border border-cyan-500/20">
                         <label className="text-[10px] text-cyan-400 font-bold uppercase tracking-widest mb-3 block">Форм-фактор</label>
                         <div className="grid grid-cols-2 gap-2">
@@ -372,8 +359,6 @@ export default function ConfiguratorPage() {
                             <button type="button" onClick={() => setLayout('100')} className={`py-2.5 text-[10px] font-mono border rounded-lg transition-all ${layout === '100' ? 'border-cyan-400 bg-cyan-400/10 text-cyan-400' : 'border-white/5 text-zinc-500'}`}>⌨️ 100% Full-size</button>
                         </div>
                     </div>
-
-                    {/* Цвет Корпуса */}
                     <div className="mb-5 p-4 rounded-xl bg-white/[0.02] border border-white/5">
                         <label className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mb-3 block">Цвет корпуса (бока + подложка)</label>
                         <div className="flex flex-wrap gap-2">
@@ -382,8 +367,6 @@ export default function ConfiguratorPage() {
                             ))}
                         </div>
                     </div>
-
-                    {/* Цвет клавиш */}
                     <div className="mb-5 p-4 rounded-xl bg-white/[0.02] border border-white/5 transition-all hover:border-zinc-700"
                          onMouseEnter={() => setHoveredSection('keycaps')}
                          onMouseLeave={() => setHoveredSection(null)}
@@ -395,8 +378,6 @@ export default function ConfiguratorPage() {
                             ))}
                         </div>
                     </div>
-
-                    {/* Переключатели */}
                     <div className="mb-5 p-4 rounded-xl bg-white/[0.02] border border-white/5 transition-all hover:border-zinc-700"
                          onMouseEnter={() => setHoveredSection('switches')}
                          onMouseLeave={() => setHoveredSection(null)}
@@ -408,8 +389,6 @@ export default function ConfiguratorPage() {
                             ))}
                         </div>
                     </div>
-
-                    {/* Спец-режимы */}
                     <div className="mb-5 p-4 rounded-xl bg-white/[0.02] border border-white/5">
                         <label className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mb-2 block">Материал клавиш</label>
                         <div className="grid grid-cols-2 gap-2">
@@ -442,8 +421,6 @@ export default function ConfiguratorPage() {
                     </button>
                 </div>
             </motion.aside>
-
-            {/* ЭКРАН 3D СТУДИИ */}
             <div className="flex-1 relative h-full bg-[#121214] flex flex-col">
                 {Studio ? (
                     <Studio.Canvas shadows camera={{ position: [0, 3.8, 5.2], fov: 34 }} dpr={[1, 2]} gl={{ antialias: true, alpha: false, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 0.85 }}>
@@ -472,8 +449,6 @@ export default function ConfiguratorPage() {
         </div>
     );
 }
-
-// ====================== 3D-ДВИЖОК ======================
 function KeyboardEngine({ Studio, layout, caseColor, keycapColor, volumeColor, switchColor, keycapMaterialType, revealSwitches, rgbMode, hoveredSection, waveResetTrigger, printBlobUrl }: any) {
     const { useFrame } = Studio;
 

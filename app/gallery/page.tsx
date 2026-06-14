@@ -137,22 +137,16 @@ export default function GalleryPage() {
                                             />
                                         </Suspense>
                                     </Studio.Canvas>
-
-                                    {/* Лайк поверх 3D */}
                                     <button
                                         onClick={() => handleLike(item.id)}
                                         className="absolute top-3 right-3 flex items-center gap-1 px-3 py-1.5 bg-black/60 backdrop-blur-sm rounded-full text-sm hover:bg-rose-500/30 transition z-10"
                                     >
                                         {item.likesCount ? '❤️' : '🤍'}
                                     </button>
-
-                                    {/* Бейдж раскладки */}
                                     <span className="absolute bottom-3 left-3 text-[10px] font-mono bg-black/60 backdrop-blur-sm px-2 py-1 rounded-lg text-zinc-300">
                                         {item.layout === '100' ? 'FULL-SIZE' : '80% TKL'}
                                     </span>
                                 </div>
-
-                                {/* Инфо */}
                                 <div className="p-6 flex flex-col flex-1">
                                     <h3 className="text-lg font-bold truncate mb-3">{item.title}</h3>
 
@@ -197,16 +191,12 @@ export default function GalleryPage() {
         </div>
     );
 }
-
-// ====================== 3D Превью для галереи ======================
 function GalleryPreview({ Studio, layout, caseColor, keycapColor, switchColor, keycapMaterialType }: any) {
     const model80 = Studio.useGLTF('/models/main.glb');
     const model100 = Studio.useGLTF('/models/mainfull.glb');
 
     const currentModel = layout === '100' ? model100 : model80;
     const { scene } = currentModel;
-
-    // Клонируем сцену чтобы не менять оригинал
     const clonedScene = React.useMemo(() => scene.clone(), [scene]);
 
     React.useEffect(() => {
