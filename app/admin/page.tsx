@@ -219,6 +219,7 @@ export default function AdminPage() {
                                             <option value="3">Собран</option>
                                             <option value="4">Доставлен</option>
                                             <option value="5">Отменён</option>
+                                            <option value="6">Собирается</option>
                                         </select>
                                     </td>
                                 </tr>

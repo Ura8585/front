@@ -430,8 +430,28 @@ export default function HomePage() {
                                     <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-zinc-950 border border-white/10 rounded-2xl px-5 py-3.5 focus:outline-none focus:border-cyan-400" required />
                                     <input type="text" placeholder="Имя" value={name} onChange={(e) => setName(e.target.value)} className="w-full bg-zinc-950 border border-white/10 rounded-2xl px-5 py-3.5 focus:outline-none focus:border-cyan-400" />
                                     <input type="text" placeholder="Фамилия" value={surname} onChange={(e) => setSurname(e.target.value)} className="w-full bg-zinc-950 border border-white/10 rounded-2xl px-5 py-3.5 focus:outline-none focus:border-cyan-400" />
-                                    <input type="text" placeholder="Телефон" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full bg-zinc-950 border border-white/10 rounded-2xl px-5 py-3.5 focus:outline-none focus:border-cyan-400" />
-                                </>
+                                    <input
+                                        type="tel"
+                                        placeholder="+7 (999) 999-99-99"
+                                        value={phone}
+                                        onChange={(e) => {
+                                            let value = e.target.value.replace(/\D/g, ''); // Убираем всё кроме цифр
+                                            if (value.startsWith('7') || value.startsWith('8')) {
+                                                value = value.substring(1); // Убираем первую 7 или 8
+                                            }
+                                            if (value.length > 10) value = value.substring(0, 10); // Максимум 10 цифр
+
+                                            let formatted = '+7 ';
+                                            if (value.length > 0) formatted += '(' + value.substring(0, 3);
+                                            if (value.length > 3) formatted += ') ' + value.substring(3, 6);
+                                            if (value.length > 6) formatted += '-' + value.substring(6, 8);
+                                            if (value.length > 8) formatted += '-' + value.substring(8, 10);
+
+                                            setPhone(formatted);
+                                        }}
+                                        className="w-full bg-zinc-950 border border-white/10 rounded-2xl px-5 py-3.5 focus:outline-none focus:border-cyan-400"
+                                        required
+                                    />                                </>
                             )}
                             <button type="submit" disabled={authLoading} className="w-full py-4 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-2xl font-semibold text-lg hover:brightness-110 transition disabled:opacity-50">
                                 {authLoading ? 'Загрузка...' : authMode === 'login' ? 'Войти' : 'Зарегистрироваться'}
