@@ -46,7 +46,15 @@ const getCroppedImg = (imageSrc: string, pixelCrop: { x: number; y: number; widt
     });
 };
 
-export default function ConfiguratorPage() {
+export default function ConfiguratorPageWrapper() {
+    return (
+        <Suspense fallback={<div className="h-screen bg-zinc-950 flex items-center justify-center text-white font-mono">Загрузка конфигуратора...</div>}>
+            <ConfiguratorPage />
+        </Suspense>
+    );
+}
+
+function ConfiguratorPage() {
     const searchParams = useSearchParams();
     const configId = searchParams.get('configId');
     const editMode = searchParams.get('editMode') === 'true';
