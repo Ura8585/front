@@ -42,7 +42,7 @@ export default function ProfilePage() {
 
         const fetchData = async () => {
             try {
-                const base = 'http://89.109.16.50:8968';
+                const base = 'https://kdbackend.ryban.ru';
 
                 const profileRes = await fetch(`${base}/api/users/profile`, {
                     headers: { 'Authorization': `Bearer ${token}` }
@@ -77,7 +77,7 @@ export default function ProfilePage() {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://89.109.16.50:8968/api/users/upload-avatar', {
+            const response = await fetch('https://kdbackend.ryban.ru/api/users/upload-avatar', {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` },
                 body: formData,
@@ -104,13 +104,13 @@ export default function ProfilePage() {
         if (!confirm('Уверен, что хочешь отменить заказ?')) return;
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://89.109.16.50:8968/api/orders/${orderId}/cancel`, {
+            const response = await fetch(`https://kdbackend.ryban.ru/api/orders/${orderId}/cancel`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (!response.ok) throw new Error('Ошибка отмены');
 
-            const ordersRes = await fetch('http://89.109.16.50:8968/api/orders/my-orders', {
+            const ordersRes = await fetch('https://kdbackend.ryban.ru/api/orders/my-orders', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (ordersRes.ok) setOrders(await ordersRes.json());
@@ -124,7 +124,7 @@ export default function ProfilePage() {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://89.109.16.50:8968/api/gallery/publish', {
+            const response = await fetch('https://kdbackend.ryban.ru/api/gallery/publish', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -201,7 +201,7 @@ export default function ProfilePage() {
                         <div className="flex flex-col items-center">
                             <div className="relative group w-40 h-40 rounded-3xl overflow-hidden border-4 border-white/10 shadow-2xl">
                                 {user?.avatarUrl ? (
-                                    <img src={`http://89.109.16.50:8968${user.avatarUrl}`} alt="Avatar" className="w-full h-full object-cover" />
+                                    <img src={`https://kdbackend.ryban.ru${user.avatarUrl}`} alt="Avatar" className="w-full h-full object-cover" />
                                 ) : (
                                     <div className="w-full h-full bg-gradient-to-br from-zinc-800 to-zinc-950 flex items-center justify-center text-6xl font-black text-zinc-700">
                                         {user?.login?.slice(0, 2).toUpperCase()}

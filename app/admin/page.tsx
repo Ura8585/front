@@ -50,7 +50,7 @@ export default function AdminPage() {
 
     const api = (url: string, options: any = {}) => {
         const token = localStorage.getItem('token');
-        return fetch(`http://89.109.16.50:8968${url}`, {
+        return fetch(`https://kdbackend.ryban.ru${url}`, {
             ...options,
             headers: { ...options.headers, 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
         });

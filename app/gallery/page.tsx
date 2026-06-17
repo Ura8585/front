@@ -32,7 +32,7 @@ export default function GalleryPage() {
 
     useEffect(() => {
         Promise.all([
-            fetch('http://89.109.16.50:8968/api/gallery'),
+            fetch('https://kdbackend.ryban.ru/api/gallery'),
             import('@react-three/fiber'),
             import('@react-three/drei')
         ]).then(([res, fiber, drei]) => {
@@ -49,7 +49,7 @@ export default function GalleryPage() {
 
     const handleLike = async (id: number) => {
         try {
-            await fetch(`http://89.109.16.50:8968/api/gallery/${id}/like`, { method: 'POST' });
+            await fetch(`https://kdbackend.ryban.ru/api/gallery/${id}/like`, { method: 'POST' });
             setItems(items.map(i => i.id === id ? { ...i, likesCount: 1 } : i));
         } catch (err) {
             console.error(err);

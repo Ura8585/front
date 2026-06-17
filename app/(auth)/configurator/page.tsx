@@ -70,7 +70,7 @@ function ConfiguratorPage() {
     useEffect(() => {
         const loadCatalog = async () => {
             try {
-                const res = await fetch('http://89.109.16.50:8968/api/catalog');
+                const res = await fetch('https://kdbackend.ryban.ru/api/catalog');
                 if (res.ok) {
                     const catalog = await res.json();
                     setCatalogComponents(catalog);
@@ -94,7 +94,7 @@ function ConfiguratorPage() {
         const loadConfig = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const response = await fetch(`http://89.109.16.50:8968/api/configurations/${configId}/full`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const response = await fetch(`https://kdbackend.ryban.ru/api/configurations/${configId}/full`, { headers: { 'Authorization': `Bearer ${token}` } });
                 if (!response.ok) { console.error('Не удалось загрузить конфигурацию'); setLoadingConfig(false); return; }
                 const data = await response.json();
                 if (data.layout) setLayout(data.layout);
@@ -105,7 +105,7 @@ function ConfiguratorPage() {
                 if (data.keycapMaterialType) setKeycapMaterialType(data.keycapMaterialType);
                 if (data.switchType) setSwitchType(data.switchType);
                 if (data.rgbMode !== undefined && data.rgbMode !== null) setRgbMode(data.rgbMode);
-                if (data.customPrintImageUrl) setPrintBlobUrl(`http://89.109.16.50:8968${data.customPrintImageUrl}`);
+                if (data.customPrintImageUrl) setPrintBlobUrl(`https://kdbackend.ryban.ru${data.customPrintImageUrl}`);
             } catch (err) { console.error('Ошибка загрузки конфигурации:', err); }
             finally { setLoadingConfig(false); }
         };
@@ -171,7 +171,7 @@ function ConfiguratorPage() {
             formData.append('TotalPrice', totalPrice.toString());
             if (printFile) formData.append('PrintImage', printFile);
 
-            const response = await fetch('http://89.109.16.50:8968/api/configurations/create-custom', { method: 'POST', body: formData });
+            const response = await fetch('https://kdbackend.ryban.ru/api/configurations/create-custom', { method: 'POST', body: formData });
             if (response.ok) {
                 const data = await response.json();
                 localStorage.setItem('lastConfigId', data.configurationId);
