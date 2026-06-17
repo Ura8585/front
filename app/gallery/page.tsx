@@ -194,60 +194,40 @@ export default function GalleryPage() {
 function GalleryPreview({ Studio, layout, caseColor, keycapColor, switchColor, keycapMaterialType }: any) {
     const model80 = Studio.useGLTF('/models/main.glb');
     const model100 = Studio.useGLTF('/models/mainfull.glb');
-
     const currentModel = layout === '100' ? model100 : model80;
-    const { scene } = currentModel;
-    const clonedScene = React.useMemo(() => scene.clone(), [scene]);
+    const scene = currentModel.scene;
 
-    React.useEffect(() => {
-        clonedScene.traverse((child: any) => {
+    useEffect(() => {
+        scene.traverse((child: any) => {
             if (!child.isMesh) return;
 
-            if (!child.userData.materialCloned && child.material) {
+            if (!child.userData.galleryCloned && child.material) {
                 child.material = Array.isArray(child.material)
                     ? child.material.map((m: any) => m.clone())
                     : child.material.clone();
-                child.userData.materialCloned = true;
+                child.userData.galleryCloned = true;
             }
 
             const meshName = child.name.toLowerCase();
 
             if (meshName.includes('board') || meshName.includes('case') || meshName.includes('body')) {
                 const mats = Array.isArray(child.material) ? child.material : [child.material];
-                mats.forEach((mat: any) => {
-                    if (!mat) return;
-                    mat.color.set(caseColor);
-                    mat.roughness = 0.35;
-                    mat.metalness = 0.15;
-                    mat.needsUpdate = true;
-                });
+                mats.forEach((mat: any) => { if (mat) { mat.color.set(caseColor); mat.needsUpdate = true; } });
             }
             else if (meshName.includes('keycap') || meshName.includes('button') || child.position.y > 0.35) {
                 const mats = Array.isArray(child.material) ? child.material : [child.material];
-                mats.forEach((mat: any) => {
-                    if (!mat) return;
-                    mat.color.set(keycapColor);
-                    mat.roughness = keycapMaterialType === 'matte' ? 0.75 : 0.1;
-                    mat.metalness = keycapMaterialType === 'metallic' ? 0.95 : 0.0;
-                    mat.needsUpdate = true;
-                });
+                mats.forEach((mat: any) => { if (mat) { mat.color.set(keycapColor); mat.needsUpdate = true; } });
             }
             else if (meshName.includes('stem') || meshName.includes('shtok') || meshName.includes('axis')) {
                 const mats = Array.isArray(child.material) ? child.material : [child.material];
                 mats.forEach((mat: any, index: number) => {
                     if (!mat) return;
-                    const matName = mat.name.toLowerCase();
-                    const isStem = matName.includes('stem') || matName.includes('shtok') || (mats.length > 1 && index === 1);
-                    if (isStem) {
-                        mat.color.set(switchColor);
-                        mat.roughness = 0.35;
-                        mat.metalness = 0.0;
-                        mat.needsUpdate = true;
-                    }
+                    const isStem = index === 1 || mat.name.toLowerCase().includes('stem') || mat.name.toLowerCase().includes('shtok');
+                    if (isStem) { mat.color.set(switchColor); mat.needsUpdate = true; }
                 });
             }
         });
-    }, [clonedScene, caseColor, keycapColor, switchColor, keycapMaterialType]);
+    }, [caseColor, keycapColor, switchColor]);
 
-    return <primitive object={clonedScene} scale={0.9} position={[0, -0.3, 0]} />;
+    return <primitive object={scene} scale={0.9} position={[0, -0.3, 0]} />;
 }
