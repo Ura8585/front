@@ -1,9 +1,8 @@
 'use client';
 
-import React, { useEffect, useState, Suspense } from 'react';
+import React, { useEffect, useState, Suspense, useRef } from 'react';
 import Link from 'next/link';
 import * as THREE from 'three';
-
 interface GalleryItem {
     id: number;
     title: string;
@@ -195,39 +194,43 @@ function GalleryPreview({ Studio, layout, caseColor, keycapColor, switchColor, k
     const model80 = Studio.useGLTF('/models/main.glb');
     const model100 = Studio.useGLTF('/models/mainfull.glb');
     const currentModel = layout === '100' ? model100 : model80;
-    const scene = currentModel.scene;
+
+    const clonedSceneRef = useRef<THREE.Group | null>(null);
+
+    if (!clonedSceneRef.current) {
+        clonedSceneRef.current = currentModel.scene.clone(true);
+    }
 
     useEffect(() => {
-        scene.traverse((child: any) => {
+        if (!clonedSceneRef.current) return;
+        clonedSceneRef.current.traverse((child: any) => {
             if (!child.isMesh) return;
-
-            if (!child.userData.galleryCloned && child.material) {
-                child.material = Array.isArray(child.material)
-                    ? child.material.map((m: any) => m.clone())
-                    : child.material.clone();
-                child.userData.galleryCloned = true;
-            }
-
             const meshName = child.name.toLowerCase();
 
             if (meshName.includes('board') || meshName.includes('case') || meshName.includes('body')) {
-                const mats = Array.isArray(child.material) ? child.material : [child.material];
-                mats.forEach((mat: any) => { if (mat) { mat.color.set(caseColor); mat.needsUpdate = true; } });
+                if (Array.isArray(child.material)) {
+                    child.material.forEach((m: any) => { if (m) { m.color.set(caseColor); m.needsUpdate = true; } });
+                } else if (child.material) {
+                    child.material.color.set(caseColor);
+                    child.material.needsUpdate = true;
+                }
             }
-            else if (meshName.includes('keycap') || meshName.includes('button') || child.position.y > 0.35) {
-                const mats = Array.isArray(child.material) ? child.material : [child.material];
-                mats.forEach((mat: any) => { if (mat) { mat.color.set(keycapColor); mat.needsUpdate = true; } });
+            else if (meshName.includes('keycap') || child.position.y > 0.35) {
+                if (Array.isArray(child.material)) {
+                    child.material.forEach((m: any) => { if (m) { m.color.set(keycapColor); m.needsUpdate = true; } });
+                } else if (child.material) {
+                    child.material.color.set(keycapColor);
+                    child.material.needsUpdate = true;
+                }
             }
-            else if (meshName.includes('stem') || meshName.includes('shtok') || meshName.includes('axis')) {
-                const mats = Array.isArray(child.material) ? child.material : [child.material];
-                mats.forEach((mat: any, index: number) => {
-                    if (!mat) return;
-                    const isStem = index === 1 || mat.name.toLowerCase().includes('stem') || mat.name.toLowerCase().includes('shtok');
-                    if (isStem) { mat.color.set(switchColor); mat.needsUpdate = true; }
-                });
+            else if (meshName.includes('stem') || meshName.includes('shtok')) {
+                if (Array.isArray(child.material)) {
+                    child.material.forEach((m: any, i: number) => {
+                        if (m && i === 1) { m.color.set(switchColor); m.needsUpdate = true; }
+                    });
+                }
             }
         });
     }, [caseColor, keycapColor, switchColor]);
 
-    return <primitive object={scene} scale={0.9} position={[0, -0.3, 0]} />;
-}
+    return <primitive object={clonedSceneRef.current!} scale={0.9} position={[0, -0.3, 0]} />;}
