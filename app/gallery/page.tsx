@@ -123,6 +123,7 @@ export default function GalleryPage() {
                                                 keycapColor={item.keycapColor || '#111111'}
                                                 switchColor={item.switchColor || '#ef4444'}
                                                 keycapMaterialType={item.keycapMaterialType || 'matte'}
+                                                printUrl={item.customPrintImageUrl}
                                             />
 
                                             <Studio.Environment preset="studio" environmentIntensity={0.3} />
@@ -190,12 +191,13 @@ export default function GalleryPage() {
         </div>
     );
 }
-function GalleryPreview({ Studio, layout, caseColor, keycapColor, switchColor, keycapMaterialType }: any) {
+function GalleryPreview({ Studio, layout, caseColor, keycapColor, switchColor, keycapMaterialType, printUrl }: any) {
     const model80 = Studio.useGLTF('/models/main.glb');
     const model100 = Studio.useGLTF('/models/mainfull.glb');
     const currentModel = layout === '100' ? model100 : model80;
 
     const clonedSceneRef = useRef<THREE.Group | null>(null);
+    const printTextureRef = useRef<THREE.Texture | null>(null);
 
     if (!clonedSceneRef.current) {
         clonedSceneRef.current = currentModel.scene.clone(true);
@@ -204,42 +206,79 @@ function GalleryPreview({ Studio, layout, caseColor, keycapColor, switchColor, k
     useEffect(() => {
         if (!clonedSceneRef.current) return;
         clonedSceneRef.current.traverse((child: any) => {
-            if (!child.isMesh) return;
-
-            // Клонируем материал при первом проходе
-            if (!child.userData.galleryMatFixed) {
+            if (child.isMesh) {
+                const setMap = (mat: any) => { if (mat) { mat.map = null; mat.needsUpdate = true; } };
                 if (Array.isArray(child.material)) {
-                    child.material = child.material.map((m: any) => m ? m.clone() : null);
-                } else if (child.material) {
-                    child.material = child.material.clone();
-                }
-                child.userData.galleryMatFixed = true;
-            }
-
-            const meshName = child.name.toLowerCase();
-
-            if (meshName.includes('board') || meshName.includes('case') || meshName.includes('body')) {
-                if (Array.isArray(child.material)) {
-                    child.material.forEach((m: any) => { if (m) { m.color.set(caseColor); m.needsUpdate = true; } });
-                } else if (child.material) {
-                    child.material.color.set(caseColor);
-                    child.material.needsUpdate = true;
-                }
-            } else if (meshName.includes('keycap') || child.position.y > 0.35) {
-                if (Array.isArray(child.material)) {
-                    child.material.forEach((m: any) => { if (m) { m.color.set(keycapColor); m.needsUpdate = true; } });
-                } else if (child.material) {
-                    child.material.color.set(keycapColor);
-                    child.material.needsUpdate = true;
-                }
-            } else if (meshName.includes('stem') || meshName.includes('shtok')) {
-                if (Array.isArray(child.material)) {
-                    child.material.forEach((m: any, i: number) => {
-                        if (m && i === 1) { m.color.set(switchColor); m.needsUpdate = true; }
-                    });
+                    child.material.forEach(setMap);
+                } else {
+                    setMap(child.material);
                 }
             }
         });
-    }, [caseColor, keycapColor, switchColor]);
 
-    return <primitive object={clonedSceneRef.current!} scale={0.9} position={[0, -0.3, 0]} />;}
+        if (printUrl) {
+            const fullUrl = printUrl.startsWith('http') ? printUrl : `https://kdbackend.ryban.ru${printUrl}`;
+            new THREE.TextureLoader().load(
+                fullUrl,
+                (texture) => {
+                    texture.flipY = false;
+                    texture.colorSpace = THREE.SRGBColorSpace;
+                    texture.wrapS = THREE.ClampToEdgeWrapping;
+                    texture.wrapT = THREE.ClampToEdgeWrapping;
+                    printTextureRef.current = texture;
+                    // Применяем на все меши
+                    clonedSceneRef.current!.traverse((child: any) => {
+                        if (child.isMesh) {
+                            const apply = (mat: any) => { if (mat) { mat.map = texture; mat.needsUpdate = true; } };
+                            if (Array.isArray(child.material)) {
+                                child.material.forEach(apply);
+                            } else {
+                                apply(child.material);
+                            }
+                        }
+                    });
+                },
+                undefined,
+                (err) => console.warn('Ошибка загрузки принта в галерее:', err)
+            );
+        } else {
+            printTextureRef.current = null;
+        }
+    }, [printUrl]);
+    useEffect(() => {
+        if (!clonedSceneRef.current) return;
+        clonedSceneRef.current.traverse((child: any) => {
+            if (!child.isMesh) return;
+            const meshName = child.name.toLowerCase();
+            const isBoard = meshName.includes('board') || meshName.includes('case') || meshName.includes('body');
+            const isKeycap = meshName.includes('keycap') || child.position.y > 0.35;
+            const isStem = meshName.includes('stem') || meshName.includes('shtok');
+
+            const applyColor = (mat: any, color: string, force = false) => {
+                if (!mat) return;
+                // Если есть активный принт и это корпус – оставляем белым, иначе красим
+                if (printTextureRef.current && isBoard) {
+                    mat.color.set('#ffffff');
+                } else {
+                    mat.color.set(color);
+                }
+                mat.needsUpdate = true;
+            };
+
+            if (Array.isArray(child.material)) {
+                child.material.forEach((mat: any, idx: number) => {
+                    if (isBoard) applyColor(mat, caseColor);
+                    else if (isKeycap) applyColor(mat, keycapColor);
+                    else if (isStem && idx === 1) applyColor(mat, switchColor);
+                });
+            } else if (child.material) {
+                if (isBoard) applyColor(child.material, caseColor);
+                else if (isKeycap) applyColor(child.material, keycapColor);
+                // стем одиночный – редко, но пусть будет
+                else if (isStem) applyColor(child.material, switchColor);
+            }
+        });
+    }, [caseColor, keycapColor, switchColor, printUrl]);
+
+    return <primitive object={clonedSceneRef.current!} scale={0.9} position={[0, -0.3, 0]} />;
+}   
