@@ -51,7 +51,7 @@ function CheckoutContent() {
 
         const fetchData = async () => {
             try {
-                const base = 'http://localhost:5237';
+                const base = 'http://89.109.16.50:8968';
                 const token = localStorage.getItem('token')!;
                 const profileRes = await fetch(`${base}/api/users/profile`, {
                     headers: { 'Authorization': `Bearer ${token}` }
@@ -165,7 +165,7 @@ function CheckoutContent() {
             const token = localStorage.getItem('token');
 
             if (editMode && orderId) {
-                const response = await fetch(`http://localhost:5237/api/orders/${orderId}/update`, {
+                const response = await fetch(`http://89.109.16.50:8968/api/orders/${orderId}/update`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -181,7 +181,7 @@ function CheckoutContent() {
 
                 setSuccessOrderId(Number(orderId));
             } else {
-                const response = await fetch('http://localhost:5237/api/orders/place', {
+                const response = await fetch('http://89.109.16.50:8968/api/orders/place', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

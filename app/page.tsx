@@ -63,10 +63,10 @@ export default function HomePage() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const catalogRes = await fetch('http://localhost:5237/api/catalog');
+                const catalogRes = await fetch('http://89.109.16.50:8968/api/catalog');
                 if (catalogRes.ok) setCatalog(await catalogRes.json());
 
-                const galleryRes = await fetch('http://localhost:5237/api/gallery');
+                const galleryRes = await fetch('http://89.109.16.50:8968/api/gallery');
                 if (galleryRes.ok) {
                     const data = await galleryRes.json();
                     setGallery(data.slice(0, 6));
@@ -82,7 +82,7 @@ export default function HomePage() {
             const token = localStorage.getItem('token');
             if (!token) return;
             try {
-                const response = await fetch('http://localhost:5237/api/users/profile', {
+                const response = await fetch('http://89.109.16.50:8968/api/users/profile', {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 if (response.ok) {
@@ -104,7 +104,7 @@ export default function HomePage() {
         setAuthLoading(true);
         try {
             if (authMode === 'login') {
-                const res = await fetch('http://localhost:5237/api/auth/login', {
+                const res = await fetch('http://89.109.16.50:8968/api/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ login, password })
@@ -112,7 +112,7 @@ export default function HomePage() {
                 const data = await res.json();
                 if (res.ok && data.token) {
                     localStorage.setItem('token', data.token);
-                    const profileRes = await fetch('http://localhost:5237/api/users/profile', {
+                    const profileRes = await fetch('http://89.109.16.50:8968/api/users/profile', {
                         headers: { Authorization: `Bearer ${data.token}` },
                     });
                     if (profileRes.ok) {
@@ -124,7 +124,7 @@ export default function HomePage() {
                     setAuthError(data.message || data.error || 'Ошибка входа');
                 }
             } else {
-                const res = await fetch('http://localhost:5237/api/auth/register', {
+                const res = await fetch('http://89.109.16.50:8968/api/auth/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ login, password, email, name, surname, phone })

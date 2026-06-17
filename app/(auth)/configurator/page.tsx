@@ -100,7 +100,7 @@ function ConfiguratorPage() {
         const loadConfig = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const response = await fetch(`http://localhost:5237/api/configurations/${configId}/full`, {
+                const response = await fetch(`http://89.109.16.50:8968/api/configurations/${configId}/full`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (!response.ok) {
@@ -118,7 +118,7 @@ function ConfiguratorPage() {
                 if (data.switchType) setSwitchType(data.switchType);
                 if (data.rgbMode !== undefined && data.rgbMode !== null) setRgbMode(data.rgbMode);
                 if (data.customPrintImageUrl) {
-                    setPrintBlobUrl(`http://localhost:5237${data.customPrintImageUrl}`);
+                    setPrintBlobUrl(`http://89.109.16.50:8968${data.customPrintImageUrl}`);
                 }
 
                 console.log('Конфигурация загружена:', data);
@@ -229,7 +229,7 @@ function ConfiguratorPage() {
                 formData.append('PrintImage', printFile);
             }
 
-            const response = await fetch('http://localhost:5237/api/configurations/create-custom', {
+            const response = await fetch('http://89.109.16.50:8968/api/configurations/create-custom', {
                 method: 'POST',
                 body: formData
             });
