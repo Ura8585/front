@@ -205,6 +205,17 @@ function GalleryPreview({ Studio, layout, caseColor, keycapColor, switchColor, k
         if (!clonedSceneRef.current) return;
         clonedSceneRef.current.traverse((child: any) => {
             if (!child.isMesh) return;
+
+            // Клонируем материал при первом проходе
+            if (!child.userData.galleryMatFixed) {
+                if (Array.isArray(child.material)) {
+                    child.material = child.material.map((m: any) => m ? m.clone() : null);
+                } else if (child.material) {
+                    child.material = child.material.clone();
+                }
+                child.userData.galleryMatFixed = true;
+            }
+
             const meshName = child.name.toLowerCase();
 
             if (meshName.includes('board') || meshName.includes('case') || meshName.includes('body')) {
@@ -214,16 +225,14 @@ function GalleryPreview({ Studio, layout, caseColor, keycapColor, switchColor, k
                     child.material.color.set(caseColor);
                     child.material.needsUpdate = true;
                 }
-            }
-            else if (meshName.includes('keycap') || child.position.y > 0.35) {
+            } else if (meshName.includes('keycap') || child.position.y > 0.35) {
                 if (Array.isArray(child.material)) {
                     child.material.forEach((m: any) => { if (m) { m.color.set(keycapColor); m.needsUpdate = true; } });
                 } else if (child.material) {
                     child.material.color.set(keycapColor);
                     child.material.needsUpdate = true;
                 }
-            }
-            else if (meshName.includes('stem') || meshName.includes('shtok')) {
+            } else if (meshName.includes('stem') || meshName.includes('shtok')) {
                 if (Array.isArray(child.material)) {
                     child.material.forEach((m: any, i: number) => {
                         if (m && i === 1) { m.color.set(switchColor); m.needsUpdate = true; }

@@ -563,18 +563,17 @@ function KeyboardEngine({ Studio, layout, caseColor, keycapColor, volumeColor, s
     useEffect(() => {
         if (printBlobUrl) {
             new THREE.TextureLoader().load(printBlobUrl, (texture) => {
-                texture.flipY = true;
-                texture.center.set(0.5, 0.5);
-                texture.rotation = Math.PI;
+                texture.flipY = false;
+                texture.colorSpace = THREE.SRGBColorSpace;
                 texture.wrapS = THREE.ClampToEdgeWrapping;
                 texture.wrapT = THREE.ClampToEdgeWrapping;
+                texture.needsUpdate = true;
                 currentTexture.current = texture;
             });
         } else {
             currentTexture.current = null;
         }
     }, [printBlobUrl]);
-
     useEffect(() => {
         // ... (твой оригинальный useEffect с traverse — полностью оставил как было)
         const keycapsArray: any[] = [];
