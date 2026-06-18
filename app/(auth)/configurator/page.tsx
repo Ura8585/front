@@ -563,10 +563,11 @@ function KeyboardEngine({ Studio, layout, caseColor, keycapColor, volumeColor, s
     useEffect(() => {
         if (printBlobUrl) {
             new THREE.TextureLoader().load(printBlobUrl, (texture) => {
-                // Корректно отражаем текстуру по вертикали без deprecated методов
                 texture.wrapS = THREE.ClampToEdgeWrapping;
                 texture.wrapT = THREE.ClampToEdgeWrapping;
-                texture.flipY = true;                   // включаем встроенный flip
+                texture.flipY = true;
+                texture.center.set(0.5, 0.5);
+                texture.rotation = Math.PI;
                 texture.colorSpace = THREE.SRGBColorSpace;
                 texture.needsUpdate = true;
                 currentTexture.current = texture;
