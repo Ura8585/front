@@ -61,14 +61,12 @@ function ConfiguratorPage() {
     const [loadingConfig, setLoadingConfig] = useState(!!configId);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-    // === Каталог и цены ===
     const [catalogComponents, setCatalogComponents] = useState<any>({ cases: [], switches: [], keycaps: [] });
     const [selectedCaseId, setSelectedCaseId] = useState<number>(1);
     const [selectedSwitchId, setSelectedSwitchId] = useState<number>(2);
     const [selectedKeycapId, setSelectedKeycapId] = useState<number>(3);
     const [totalPrice, setTotalPrice] = useState(0);
 
-    // Загрузка каталога
     useEffect(() => {
         const loadCatalog = async () => {
             try {
@@ -95,7 +93,6 @@ function ConfiguratorPage() {
         loadCatalog();
     }, []);
 
-    // Загрузка конфигурации
     useEffect(() => {
         if (!configId) {
             setLoadingConfig(false);
@@ -577,7 +574,6 @@ function KeyboardEngine({ Studio, layout, caseColor, keycapColor, volumeColor, s
         }
     }, [printBlobUrl]);
     useEffect(() => {
-        // ... (твой оригинальный useEffect с traverse — полностью оставил как было)
         const keycapsArray: any[] = [];
         scene.updateMatrixWorld(true);
         const globalBox = new THREE.Box3().setFromObject(scene);

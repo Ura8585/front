@@ -226,7 +226,6 @@ function GalleryPreview({ Studio, layout, caseColor, keycapColor, switchColor, k
                     texture.wrapS = THREE.ClampToEdgeWrapping;
                     texture.wrapT = THREE.ClampToEdgeWrapping;
                     printTextureRef.current = texture;
-                    // Применяем на все меши
                     clonedSceneRef.current!.traverse((child: any) => {
                         if (child.isMesh) {
                             const apply = (mat: any) => { if (mat) { mat.map = texture; mat.needsUpdate = true; } };
@@ -256,7 +255,6 @@ function GalleryPreview({ Studio, layout, caseColor, keycapColor, switchColor, k
 
             const applyColor = (mat: any, color: string, force = false) => {
                 if (!mat) return;
-                // Если есть активный принт и это корпус – оставляем белым, иначе красим
                 if (printTextureRef.current && isBoard) {
                     mat.color.set('#ffffff');
                 } else {
